@@ -1,64 +1,69 @@
 # lib/helpers.py
 import sys
-from models.nycdot import Nycdot
-from models.train import Train
+from models.category import Category
+from models.item import Item
 
 
-def list_all_trains():
-    trains = Train.get_all_trains()
-    if not trains:
-        print("No trains found.")
+def list_all_items():
+    items = Item.get_all_items()
+    if not items:
+        print("No items found.")
     else:
-        for train in trains:
-            print(train)
+        for item in items:
+            print(item)
 
-def find_by_line():
-    line = input("Enter train line: ")
-    train = Train.find_by_line(line)
-    print(train) if train else print(f'{line} train not found.')
+def find_by_name():
+    name = input("Enter item name: ")
+    item = Item.find_by_name(name)
+    print(item) if item else print(f'{name} item not found.')
 
-def find_by_category():
-    category = input("Enter the train's category: ")
-    trains = Train.find_by_category(category)
-    if not trains:
-        print(f'No trains found in category "{category}".')
-    else: 
-        print(f'Trains in category "{category}":')
-        for train in trains:
-            print(train)
-
-def create_train():
-    line = input("Enter the train's line: ")
-    category = input("Enter the train's category: ")
+def find_by_quantity():
     try:
-        train = Train.create(line, category, nycdot_id=None)
-        print(f'Success: {train.line} ({train.category}) created for Nycdot')
+        quantity = int(input("Enter the item's quantity: "))
+    except ValueError:
+        print("Quantity must be an integer.")
+        return
+
+    items = Item.find_by_quantity(quantity)
+    if not items:
+        print(f'No items found in quantity "{quantity}".')
+    else:
+        print(f'Items in quantity "{quantity}":')
+        for item in items:
+            print(item)
+
+def create_item():
+    name = input("Enter the item's name: ")
+    quantity = int(input("Enter the items's quantity: "))
+    try:
+        item = Item.create(name, quantity)
+        print(f'Success: {item.name} ({item.quantity}) created for Category')
     except Exception as exc:
-        print("Error creating train: ", exc)
+        print("Error creating item: ", exc)
 
-def update_train():
-    line = input("Enter the train's line: ")
-    if train := Train.find_by_line(line):
+def update_item():
+    name = input("Enter the items's name: ")
+    if item := Item.find_by_name(name):
         try:
-            line = input("Enter the train's new line: ")
-            train.line = line
-            category = input("Enter the train's new category: ")
-            train.category = category
+            name = input("Enter the items's new name: ")
+            item.name = name
+            quantity = int(input("Enter the item's new quantity: "))
+            item.quantity = quantity
 
-            train.update()
-            print(f'Success: {train}')
+            item.update()
+            print(f'Success: {item}')
         except Exception as exc:
-            print("Error updating train: ", exc)
+            print("Error updating item: ", exc)
     else:
-        print(f'Train {line} not found.')
+        print(f'Item {name} not found.')
 
-def delete_train():
-    line = input("Enter the train's line: ")
-    if train := Train.find_by_line(line):
-        train.delete()
-        print(f'Train {line} deleted.')
+def delete_item():
+    name = input("Enter the item's name: ")
+    if item := Item.find_by_name(name):
+        item.delete()
+        print(f'Item {name} deleted.')
     else:
-        print(f'Train {line} not found.')
+        print(f'Item {name} not found.')
 
 def exit_program():
     print("Goodbye!")

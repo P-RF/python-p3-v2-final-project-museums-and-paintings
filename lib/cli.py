@@ -3,12 +3,12 @@ import click
 
 from helpers import (
     exit_program,
-    list_all_trains,
-    find_by_line,
-    find_by_category,
-    create_train,
-    update_train,
-    delete_train
+    list_all_items,
+    find_by_name,
+    find_by_quantity,
+    create_item,
+    update_item,
+    delete_item
 )
 
 
@@ -20,17 +20,17 @@ def main():
         if choice == "0":
             exit_program()
         elif choice == "1":
-            list_all_trains()
+            list_all_items()
         elif choice == "2":
-            find_by_line()
+            find_by_name()
         elif choice == "3":
-            find_by_category()
+            find_by_quantity()
         elif choice == "4":
-            create_train()
+            create_item()
         elif choice == "5":
-            update_train()
+            update_item()
         elif choice == "6":
-            delete_train()
+            delete_item()
         else:
             click.echo("Invalid choice.")
 
@@ -38,12 +38,12 @@ def main():
 def menu():
     click.echo("\nPlease select an option:")
     click.echo("0. Exit the program")
-    click.echo("1. List all trains")
-    click.echo("2. Find train by line")
-    click.echo("3. Find train by category")
-    click.echo("4. Create train")
-    click.echo("5. Update train")
-    click.echo("6. Delete train")
+    click.echo("1. List all items")
+    click.echo("2. Find item by name")
+    click.echo("3. Find item by quantity")
+    click.echo("4. Create item")
+    click.echo("5. Update item")
+    click.echo("6. Delete item")
 
 
 if __name__ == "__main__":
