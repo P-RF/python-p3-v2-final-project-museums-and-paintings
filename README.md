@@ -1,4 +1,3 @@
-
 ## NYC Trains CLI Project
 
 This project is a command-line interface (CLI) for managing and exploring the data of New York City subway trains. A user can list all trains, find a train by line or category, create new trains, update, and delete existing trains. The CLI interacts with an SQLite database (`company.db`) that stores train information, including line, category, and `nycdot_id`.  
@@ -73,15 +72,15 @@ Please select an option:
 >:
 ```
 
-#### Functions
+### Functions
 
-##### `main()`
+#### `main()`
 Runs the main loop of the CLI, displays the menu, and routes the user’s choices to corresponding functions. It continuously prompts the user until the user chooses to exit.
 
-##### `menu()`
+#### `menu()`
 Displays the numbered list of actions available in the CLI.
 
-##### Option Handlers
+### Option Handlers
 - `list_all_trains()`: Lists all trains in the database with their details (line, category, Nycdot ID).  
 - `find_by_line()`: Prompts for a line and retrieves the corresponding train object.  
 - `find_by_category()`: Prompts for a category and retrieves all train objects with matching ‘category’.  
@@ -92,7 +91,7 @@ Displays the numbered list of actions available in the CLI.
 
 ---
 
-## Helper Functions (`helpers.py`)
+### Helper Functions (`helpers.py`)
 
 This file contains functions that aid in the CLI operations, including input handling, validation, and formatting. Each function is designed to keep the CLI code focused on the user’s interaction. Examples include:
 
@@ -105,7 +104,7 @@ This file contains functions that aid in the CLI operations, including input han
 
 The `Train` model represents the trains table in the database and handles all of the database interactions. `train.py` represents a subway train. It handles the database interactions such as creating, updating, and deleting train records.
 
-#### Functions: 
+##### Functions: 
 - `create(line, category, nycdot_id=None)`: Adds a new train to the database.
 - `update()`: Updates the current train instance in the database.
 - `save()`: Saves a new train instance to the database.
@@ -115,10 +114,10 @@ The `Train` model represents the trains table in the database and handles all of
 #### `nycdot.py`
 This model represents the NYC Department of Transportation (NYCDOT). It is used to validate foreign key references from the Train objects.
 
-#### Key Function:
+##### Key Function:
 - `find_by_id(id)`: Checks if an NYCDOT record exists in the database for a given ID.
 
-#### Properties
+##### Properties
 
 - `nycdot_id`: Verifies that the value references a valid `Nycdot` in the database, making sure the foreign key column exists in the related table.  
 
