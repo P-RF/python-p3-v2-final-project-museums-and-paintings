@@ -34,8 +34,8 @@ def create_train():
     line = input("Enter the train's line: ")
     category = input("Enter the train's category: ")
     try:
-        train = Train.create(line, category)
-        print(f'Success: {train.line} ({train.category}) in Nycdot {train.nycdot_id}')
+        train = Train.create(line, category, nycdot_id=None)
+        print(f'Success: {train.line} ({train.category}) created for Nycdot')
     except Exception as exc:
         print("Error creating train: ", exc)
 

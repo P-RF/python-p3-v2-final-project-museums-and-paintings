@@ -4,20 +4,12 @@ from .nycdot import Nycdot
 
 class Train:
   all_trains = {}
-  auto_id = 0
-
 
   def __init__(self, line, category, nycdot_id=None, id=None):
-    if id is None:
-      Train.auto_id += 1
-      id = Train.auto_id
-
     self.id = id
     self.line = line
     self.category = category
     self.nycdot_id = nycdot_id
-
-    Train.all_trains[self.id] = self
 
   def __repr__(self):
     return(
@@ -46,18 +38,17 @@ class Train:
     else:
       raise ValueError("category must be a non-empty string")
 
-
   @property 
   def nycdot_id(self):
     return self._nycdot_id
 
   @nycdot_id.setter
   def nycdot_id(self, nycdot_id):
-    if type(nycdot_id) is int and Nycdot.find_by_id(nycdot_id):
+    if nycdot_id is None or type(nycdot_id) is int and Nycdot.find_by_id(nycdot_id):
       self._nycdot_id = nycdot_id
     else:
-      raise ValueError("nycdot_id must reference Nycdot in the database")
-
+      raise ValueError("nycdot_id must reference a nycdot in the database")
+      
   @classmethod
   def create_table(cls):
     """Create a new table to persist the attributes of Train instances"""
@@ -96,6 +87,16 @@ class Train:
     self.id = CURSOR.lastrowid
     type(self).all_trains[self.id] = self
 
+  def update(self):
+    """Update the table row corresponding to the current Train instance"""
+    sql = """
+      UPDATE trains
+      SET line = ?, category = ?, nycdot_id = ?
+      WHERE id = ?
+    """
+    CURSOR.execute(sql, (self.line, self.category, self.nycdot_id, self.id))
+    CONN.commit()
+
 
   def delete(self):
     """Delete the table row corresponding to the current Train instance,
@@ -115,7 +116,7 @@ class Train:
     self.id = None
 
   @classmethod
-  def create(cls, line, category, nycdot_id):
+  def create(cls, line, category, nycdot_id=None):
     """Initialize a new Train instance and save the object to the database"""
     train = cls(line, category, nycdot_id)
     train.save()
@@ -140,15 +141,13 @@ class Train:
     return train
 
   @classmethod
-  def get_all(cls):
+  def get_all_trains(cls):
     """Return a list containing one Train object per table row"""
     sql = """
       SELECT *
       FROM trains
     """
-
     rows = CURSOR.execute(sql).fetchall()
-
     return [cls.instance_from_db(row) for row in rows]
 
   @classmethod
@@ -159,7 +158,6 @@ class Train:
       FROM trains
       WHERE id = ?
     """
-
     row = CURSOR.execute(sql, (id,)).fetchone()
     return cls.instance_from_db(row) if row else None
 
@@ -171,12 +169,11 @@ class Train:
       FROM trains
       WHERE line = ?
     """
-
     row = CURSOR.execute(sql, (line,)).fetchone()
     return cls.instance_from_db(row) if row else None
 
   @classmethod
-  def find_trby_category(cls, category):
+  def find_by_category(cls, category):
     """Return a list of Train objects matching the specified category"""
     sql = """
       SELECT *

@@ -22,20 +22,15 @@ def main():
         elif choice == "1":
             list_all_trains()
         elif choice == "2":
-            line = click.prompt("Enter train line")
-            find_by_line(line)
+            find_by_line()
         elif choice == "3":
-            category = click.prompt("Enter train category")
-            find_by_category(category)
+            find_by_category()
         elif choice == "4":
             create_train()
-            click.echo("Train created!")
         elif choice == "5":
             update_train()
-            click.echo("Train updated.")
         elif choice == "6":
             delete_train()
-            click.echo("Train deleted.")
         else:
             click.echo("Invalid choice.")
 
