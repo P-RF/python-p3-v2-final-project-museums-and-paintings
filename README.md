@@ -8,11 +8,11 @@ The main interface is menu-driven, allowing the user to select an action with a 
 ---
 ## Table of Contents 📖
 
-- Project Structure
-- Features
-- Technologies
-- Contributing
-- License
+- [Project Structure](#project-structure)
+- [Features](#features)
+- [Models and Functions](#models-and-functions)
+- [Contributing](#contributing)
+- [License](#license)
 
 --- 
 ## Project Structure 🏗
@@ -35,9 +35,21 @@ The main interface is menu-driven, allowing the user to select an action with a 
 ---
 ## Features ⭐
 
-*******INSERT GIF OF HOW IT WORKS
+- Menu-Driven CLI Interface: Main menu with numbered options and continuous prompts.
+- List All Trains: Displays all of the trains in the database.
+- Find Train by Line: Prompts user for inputting a line. Returns matching train.
+- Find Train by Category: Prompts user for inputting a category. Returns all trains that match.
+- Create Train: Prompts user for train details (line and category).
+- Update Train: Prompts user for an existing train line and updates the line and category in the database.
+- Delete Train: Prompts user for a train line and deletes the train.
+- Input Validation: Makes sure user inputs the correct data before performing a operation.
+- Database Integration: CRUD operations using the `Train` model with SQLite3 (`company.db`). Foreign key validation against the `nycdots` table.
+- Exit Option: Exits the CLI when the user inputs option `0`.
+- Helper Functions: `find_by_line()` and `find_by_category()` handle requests and formatting, keeping the CLI code clean.
+
+![Preview of nycdoe trains project features](public/nycdot-project-video-ezgif.com-video-to-gif-converter.gif)
 ---
-## Technologies & Key Components 🔑
+## Models and Functions 📱
 ### CLI Script (`cli.py`)
 
 The `cli.py` file is the main file that runs at the start of the application. It provides the main menu, handles user input, and calls helper functions to perform CRUD operations on trains. Below are the key features:
@@ -85,23 +97,26 @@ Displays the numbered list of actions available in the CLI.
 This file contains functions that aid in the CLI operations, including input handling, validation, and formatting. Each function is designed to keep the CLI code focused on the user’s interaction. Examples include:
 
 - `find_by_line()`: Selects the `Train.find_by_line` method and prints the results.  
-- `find_by_category()`: Selects the `Train.find_by_category` method and prints results.  
+- `find_by_category()`: Selects the `Train.find_by_category` method and prints queries.  
 
 ---
-### Models (`train.py`)
+### Models 
+#### `train.py`
 
-The `Train` model represents the trains table in the database and handles all of the database  interactions.  
+The `Train` model represents the trains table in the database and handles all of the database interactions. `train.py` represents a subway train. It handles the database interactions such as creating, updating, and deleting train records.
 
-#### Class Methods
+#### Functions: 
+- `create(line, category, nycdot_id=None)`: Adds a new train to the database.
+- `update()`: Updates the current train instance in the database.
+- `save()`: Saves a new train instance to the database.
+- `find_by_line(line)`: Returns all trains with a given line.
+- `find_by_category(category)`: Returns all trains with a given category.
 
-- `create(line, category, nycdot_id=None)`: Creates a new `Train` instance and saves it to the database.  
-- `find_by_line(line)`: Returns the first `Train` object matching the specified line.  
-- `find_by_category(category)`: Returns all `Train` objects matching the specified category.  
+#### `nycdot.py`
+This model represents the NYC Department of Transportation (NYCDOT). It is used to validate foreign key references from the Train objects.
 
-#### Instance Methods
-
-- `save()`: Inserts a new row in the database for the current train instance.  
-- `update()`: Updates the database row that corresponds to the current train instance.  
+#### Key Function:
+- `find_by_id(id)`: Checks if an NYCDOT record exists in the database for a given ID.
 
 #### Properties
 
@@ -131,6 +146,13 @@ Foreign key constraints make sure the `nycdot_id` and the `trains` table points 
 
 
 Happy coding!
+
+---
+## Resources 📚
+
+- [Python Official Documentation](https://docs.python.org/3/)
+- [SQLite Documentation](https://www.sqlite.org/docs.html)
+- [Click Documentation](https://click.palletsprojects.com/)
 
 ---
 ## License
