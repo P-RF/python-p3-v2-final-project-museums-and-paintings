@@ -58,3 +58,36 @@ class Nycdot:
 
     self.id = CURSOR.lastrowid
     type(self).all[self.id] = self
+
+    @classmethod
+    def create(cls, name, location):
+      """Initialize a new Nycdot instance and save the object to the database"""
+      nycdot = cls(name, location)
+      nycdot.save()
+      return nycdot
+
+    def update(self):
+      """Update the table row corresponding to the current Nycdot instance"""
+      sql = """
+        UPDATE nycdots
+        SET name = ?, location = ?
+        WHERE id = ?
+      """
+      CURSOR.execute(sql, (self.name, self.location, self.id))
+      CONN.commit()
+
+    def delete(self):
+      """Delete the table row corresponding to the current Nycdot instance,
+      delete the dictionary entry, and reassign id attribute."""
+      sql = """
+        DELETE FROM nycdots
+        WHERE id = ?
+      """
+      CURSOR.execute(sql, (self.id,))
+      CONN.commit()
+
+      # Delete the dictionary entry using id as the key
+      del type(self).all[self.id]
+
+      # Set the id to None
+      self.id = None

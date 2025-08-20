@@ -1,6 +1,6 @@
 # lib/helpers.py
 import sys
-from models.nycdot import NYCDOT
+from models.nycdot import Nycdot
 from models.train import Train
 
 def exit_program():
@@ -35,7 +35,7 @@ def create_train():
     category = input("Enter the train's category: ")
     try:
         train = Train.create(line, category)
-        print(f'Success: {train.line} ({train.category}) in NYCDOT {train.nycdot_id}')
+        print(f'Success: {train.line} ({train.category}) in Nycdot {train.nycdot_id}')
     except Exception as exc:
         print("Error creating train: ", exc)
 
