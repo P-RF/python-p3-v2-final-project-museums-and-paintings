@@ -1,6 +1,6 @@
 # lib/models/train.py
 from . import CURSOR, CONN
-from .nycdot import NYCDOT
+from .nycdot import Nycdot
 
 class Train:
   all_trains = {}
@@ -21,7 +21,7 @@ class Train:
 
   def __repr__(self):
     return(
-      f"Train {self.id}: {self.line}, {self.category}, NYCDOT ID: {self.nycdot_id}"
+      f"Train {self.id}: {self.line}, {self.category}, Nycdot ID: {self.nycdot_id}"
     )
 
   @property
@@ -53,10 +53,10 @@ class Train:
 
   @nycdot_id.setter
   def nycdot_id(self, nycdot_id):
-    if type(nycdot_id) is int and NYCDOT.find_by_id(nycdot_id):
+    if type(nycdot_id) is int and Nycdot.find_by_id(nycdot_id):
       self._nycdot_id = nycdot_id
     else:
-      raise ValueError("nycdot_id must reference NYCDOT in the database")
+      raise ValueError("nycdot_id must reference Nycdot in the database")
 
   @classmethod
   def create_table(cls):
