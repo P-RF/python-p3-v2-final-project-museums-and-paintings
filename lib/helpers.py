@@ -3,9 +3,6 @@ import sys
 from models.nycdot import Nycdot
 from models.train import Train
 
-def exit_program():
-    print("Goodbye!")
-    sys.exit()
 
 def list_all_trains():
     trains = Train.get_all_trains()
@@ -62,5 +59,9 @@ def delete_train():
         print(f'Train {line} deleted.')
     else:
         print(f'Train {line} not found.')
+
+def exit_program():
+    print("Goodbye!")
+    sys.exit()
 
 
