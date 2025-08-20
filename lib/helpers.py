@@ -8,21 +8,21 @@ def exit_program():
     sys.exit()
 
 def list_all_trains():
-    trains = Train.get_all()
+    trains = Train.get_all_trains()
     if not trains:
         print("No trains found.")
     else:
         for train in trains:
             print(train)
 
-def find_train_by_line():
+def find_by_line():
     line = input("Enter train line: ")
-    train = Train.find_train_by_line(line)
+    train = Train.find_by_line(line)
     print(train) if train else print(f'{line} train not found.')
 
-def find_train_by_category():
+def find_by_category():
     category = input("Enter the train's category: ")
-    trains = Train.find_train_by_category(category)
+    trains = Train.find_by_category(category)
     if not trains:
         print(f'No trains found in category "{category}".')
     else: 
@@ -41,7 +41,7 @@ def create_train():
 
 def update_train():
     line = input("Enter the train's line: ")
-    if train := Train.find_train_by_line(line):
+    if train := Train.find_by_line(line):
         try:
             line = input("Enter the train's new line: ")
             train.line = line
@@ -57,7 +57,7 @@ def update_train():
 
 def delete_train():
     line = input("Enter the train's line: ")
-    if train := Train.find_train_by_line(line):
+    if train := Train.find_by_line(line):
         train.delete()
         print(f'Train {line} deleted.')
     else:

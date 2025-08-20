@@ -4,8 +4,8 @@ import click
 from helpers import (
     exit_program,
     list_all_trains,
-    find_train_by_line,
-    find_train_by_category,
+    find_by_line,
+    find_by_category,
     create_train,
     update_train,
     delete_train
@@ -23,10 +23,10 @@ def main():
             list_all_trains()
         elif choice == "2":
             line = click.prompt("Enter train line")
-            find_train_by_line(line)
+            find_by_line(line)
         elif choice == "3":
             category = click.prompt("Enter train category")
-            find_train_by_category(category)
+            find_by_category(category)
         elif choice == "4":
             create_train()
             click.echo("Train created!")

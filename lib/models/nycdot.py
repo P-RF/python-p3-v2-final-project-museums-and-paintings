@@ -9,4 +9,6 @@ class NYCDOT:
     self.name = name
     self.location = location
 
-  
+  @classmethod
+  def find_by_id(cls, id):
+    return cls.all.get(id)
