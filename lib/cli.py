@@ -1,5 +1,6 @@
 # lib/cli.py
 import click
+from models.item import Item
 
 from helpers import (
     exit_program,
