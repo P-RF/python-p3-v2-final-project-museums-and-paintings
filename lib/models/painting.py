@@ -1,18 +1,19 @@
 # lib/models/painting.py
 from . import CURSOR, CONN
 from .museum import Museum
+from datetime import datetime
 
 class Painting:
   all = {}
 
-  def __init__(self, title, artist, year, museum_id, id=None):
+  def __init__(self, title, artist, year, museum, id=None):
     self.id = id
     self.title = title
     self.artist = artist
     self.year = year
-    self.museum_id = museum_id
+    self.museum = museum
 
-
+  #properties
   @property
   def title(self):
     return self._title
@@ -35,27 +36,44 @@ class Painting:
     else:
       raise ValueError("artist must be a non-empty string")
 
-  @property 
-  def museum_id(self):
-    return self._museum_id
+  @property
+  def year(self):
+    return self._year
 
-  @museum_id.setter
-  def museum_id(self, museum_id):
-    if museum_id is None or (isinstance(museum_id, int) and Museum.find_by_id(museum_id)):
-      self.museum_id = museum_id
+  @year.setter
+  def year(self, year):
+    current_year = datetime.now().year
+    if not isinstance(year, int):
+      raise ValueError("year must be an integer")
+    if year > current_year:
+      raise ValueError("year cannot be in the future")
+    if year < 1000:
+      raise ValueError("year must be a 4-digit number")
+    self._year = year
+
+
+  @property 
+  def museum(self):
+    return self._museum
+
+  @museum.setter
+  def museum(self, museum):
+    if isinstance(museum, Museum) and museum.id:
+      self._museum = museum
     else:
-      raise ValueError("museum_id must reference an existing museum")
-      
+      raise ValueError("museum must be a saved Museum instance")
+
+  # db methods    
   @classmethod
   def create_table(cls):
     """Create a new table to persist the attributes of Painting instances"""
     sql = """
       CREATE TABLE IF NOT EXISTS paintings (
       id INTEGER PRIMARY KEY,
-      title TEXT,
-      artist TEXT,
-      year INTEGER,
-      museum_id INTEGER,
+      title TEXT NOT NULL,
+      artist TEXT NOT NULL,
+      year INTEGER NOT NULL,
+      museum_id INTEGER NOT NULL,
       FOREIGN KEY (museum_id) REFERENCES museums(id))
     """
     CURSOR.execute(sql)
@@ -65,13 +83,13 @@ class Painting:
   def drop_table(cls):
     """Drop the table that persists Painting instances"""
     sql = """
-      DROP TABLE IF EXISTS paintings;
+      DROP TABLE IF EXISTS paintings
     """
     CURSOR.execute(sql)
     CONN.commit()
 
   def save(self):
-    """Insert a new row with the title, artist, year, and museum_id values of the current Painting object.
+    """Insert a new row with the title, artist, year, and museum values of the current Painting object.
     Update object id attribute using the primary key value of new row.
     Save the object in local dictionary using table row's PK as dictionary key."""
     sql = """
@@ -79,7 +97,7 @@ class Painting:
       VALUES (?, ?, ?, ?)
     """
 
-    CURSOR.execute(sql, (self.title, self.artist, self.year, self.museum_id))
+    CURSOR.execute(sql, (self.title, self.artist, self.year, self.museum.id))
     CONN.commit()
 
     self.id = CURSOR.lastrowid
@@ -92,7 +110,7 @@ class Painting:
       SET title = ?, artist = ?, year = ?, museum_id = ?
       WHERE id = ?
     """
-    CURSOR.execute(sql, (self.title, self.artist, self.year, self.museum_id, self.id))
+    CURSOR.execute(sql, (self.title, self.artist, self.year, self.museum.id, self.id))
     CONN.commit()
 
 
@@ -103,45 +121,44 @@ class Painting:
       DELETE FROM paintings
       WHERE id = ?
     """
-
     CURSOR.execute(sql, (self.id,))
     CONN.commit()
 
     # Delete the dictionary entry using id as the key
-    del type(self).all[self.id]
-
-    # Set the id to None
+    type(self).all.pop(self.id, None)
     self.id = None
 
+  #constructors
   @classmethod
-  def create(cls, title, artist, year, museum_id=None):
+  def create(cls, title, artist, year, museum):
     """Initialize a new Painting instance and save the object to the database"""
-    painting = cls(title, artist, year, museum_id=museum_id)
+    painting = cls(title, artist, year, museum)
     painting.save()
     return painting
 
   @classmethod
   def instance_from_db(cls, row):
     """Return an Painting object having the attribute values from the table row."""
-
     # Check the dictionary for existing instance using the row's primary key
     painting = cls.all.get(row[0])
+    museum = Museum.find_by_id(row[4])
+
     if painting:
       # Ensure attributes match row values in case local instance was modified
       painting.title = row[1]
       painting.artist = row[2]
       painting.year = row[3]
-      painting.museum_id = row[4]
+      painting.museum = museum
     else:
       # Not in dictionary, create a new instance and add it to the dictionary
-      painting = cls(row[1], row[2], row[3], row[4])
-      painting.id = row[0]
+      painting = cls(row[1], row[2], row[3], museum, row[0])
       cls.all[painting.id] = painting
     return painting
 
+
+  #finders
   @classmethod
-  def get_all_paintings(cls):
-    """Return a list containing one Painting object per table row"""
+  def get_all(cls):
     sql = """
       SELECT *
       FROM paintings
@@ -179,7 +196,6 @@ class Painting:
       FROM paintings
       WHERE artist = ?
     """
-
     rows = CURSOR.execute(sql, (artist,)).fetchall()
     return [cls.instance_from_db(row) for row in rows]
 
@@ -191,6 +207,5 @@ class Painting:
       FROM paintings
       WHERE year = ?
     """
-
     rows = CURSOR.execute(sql, (year,)).fetchall()
     return [cls.instance_from_db(row) for row in rows]

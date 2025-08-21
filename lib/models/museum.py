@@ -96,9 +96,7 @@ class Museum:
     CONN.commit()
 
     # Delete the dictionary entry using id as the key
-    del type(self).all[self.id]
-
-    # Set the id to None
+    type(self).all.pop(self.id, None)
     self.id = None
 
   @classmethod
@@ -112,7 +110,7 @@ class Museum:
       museum.name = row[1]
       museum.location = row[2]
     else:
-      # Not in dictionary, create new instance and add to dictionary
+      # Not in dictionary, create new instance and add to dictionary. row[0] = id, row[1] = name, row[2] = location
       museum = cls(row[1], row[2])
       museum.id = row[0]
       cls.all[museum.id] = museum
@@ -125,7 +123,6 @@ class Museum:
       SELECT *
       FROM museums
     """
-
     rows = CURSOR.execute(sql).fetchall()
     return [cls.instance_from_db(row) for row in rows]
 
@@ -137,8 +134,18 @@ class Museum:
       FROM museums
       WHERE id = ?
     """
-
     row = CURSOR.execute(sql, (id,)).fetchone()
+    return cls.instance_from_db(row) if row else None
+    
+  @classmethod
+  def find_by_name(cls, name):
+    """Return a Museum object corresponding to first table row matching specified name"""
+    sql = """
+        SELECT *
+        FROM museums
+        WHERE name = ?
+    """
+    row = CURSOR.execute(sql, (name,)).fetchone()
     return cls.instance_from_db(row) if row else None
 
   @classmethod
@@ -149,7 +156,6 @@ class Museum:
       FROM museums
       WHERE location = ?
     """
-
     row = CURSOR.execute(sql, (location,)).fetchone()
     return cls.instance_from_db(row) if row else None
 
@@ -161,6 +167,5 @@ class Museum:
       FROM paintings
       WHERE museum_id = ?
     """
-
     rows = CURSOR.execute(sql, (self.id,),).fetchall()
     return [Painting.instance_from_db(row) for row in rows]
