@@ -1,8 +1,8 @@
 ## Museums & Paintings CLI Project
 
-This project is a command-line interface (CLI) for managing and exploring museums and their paintings. A user can list all museums, view the paintings in each museum, find museums or paintings, create new museums and paintings, update existing records, and delete entries. The CLI interacts with an SQLite database (company.db) that stores museum and painting information, including museum name, city, and painting details (title, artist, year).
+This project is a command-line interface (CLI) for managing and exploring museums and their paintings. A user can list all museums, view the paintings in each museum, find museums or paintings, create new museums and paintings, update existing records, and delete entries. The CLI interacts with an SQLite database (company.db) that stores museum and painting information, including museum details (name, location) and painting details (title, artist, year).
 
-A user can use this project to keep a personal record of paintings in different museums or if the user is an artist, she/he can use this CLI to keep track of where her/his works of art are located.
+A user can use this project to keep a personal record of paintings in different museums or if the user is an artist, they can use this CLI to keep track of where their works of art are located.
 
 The main interface is menu-driven, allowing the user to select actions with a number. Each action guides the user through further prompts for required information, providing a smooth interactive experience.
 
@@ -39,19 +39,18 @@ The main interface is menu-driven, allowing the user to select actions with a nu
 ## Features ⭐
 
 - Menu-Driven CLI Interface: Main menu with numbered options and continuous prompts.
-- List All Museums: Displays all museums in the database with their city.
+- List All Museums: Displays all museums in the database.
 - View Paintings in a Museum: Lists all paintings for a selected museum.
 - Navigate Back: Allows user to input B or b at any menu to return to the previous menu.
 - Create Museum or Painting: Prompts user for details and adds entries to the database when user inputs A/a.
-- Update Museum or Painting: Allows updating museum name, city and painting title, artist, and/or year when user inputs U/u.
+- Update Museum or Painting: Allows updating museum name, location, and painting title, artist, and year when user inputs U/u.
 - Delete Museum or Painting: Prompts for deletion of selected museum or painting when user inputs D/d.
 - Input Validation: Ensures user inputs valid data before performing an operation.
 - Database Integration: CRUD operations using Museum and Painting models with SQLite3.
 - Exit Option: Exits the CLI when the user inputs E/e.
 - Helper Functions: list_paintings(), list_museums(), and other helpers streamline queries and menu interactions.
 
-*** INCLUDE GIF
-![Preview of nycdoe trains project features](public/nycdot-project-video-ezgif.com-video-to-gif-converter.gif)
+![Preview of project CLI](public/phase-3-project-cli-gif.gif)
 
 ---
 
@@ -136,7 +135,7 @@ Type E or e to exit
 
 #### `main_menu()`
 Runs the main loop of the CLI, displaying the menu and routing user input to the appropriate functions. Continuously prompts until the user exits. Allows user to:
-- Select an option to view the list of museums (M/M)
+- Select an option to view the list of museums (M/m)
 - Exit the program (E/e)
 
 #### Option Handlers
@@ -177,7 +176,7 @@ Contains utility functions for the CLI, including input handling, validation, an
 #### `museum.py`
 Represents museums in the database and handles all interactions:
 - create(name, location): Creates a new museum.
-- update(name=None, city=None): Updates a museum’s attributes.
+- update(name=None, location=None): Updates a museum’s attributes.
 - delete(): Deletes a museum and its related paintings.
 - get_all(): Returns all museums.
 - find_by_id(id): Returns a museum by id.
@@ -217,13 +216,13 @@ The project uses SQLite (company.db) with two main tables:
 - `museums:` Stores museum name and location.
 - `paintings:` Stores painting title, artist, year, and a foreign key `museum_id` referencing `museums(id)`.
 
-Foreign key constraints ensure that paintings are always linked to a valid museum. Deleting a museum also deletes all of its associated paintings. Deleting a painting deletes its associated details.
+Foreign key constraints ensure that paintings are always linked to a valid museum. Deleting a museum also deletes all associated paintings due to foreign key constraints. Deleting a painting only removes that painting’s record.
 
 ---
 
 ## Contributing 🤝
 1. Clone the repository:
-`Git clone <git@github.com:P-RF/python-p3-v2-final-project-nyc-trains.git>`
+`Git clone <git@github.com:P-RF/python-p3-v2-final-project-museums-and-paintings.git>`
 2. Set up your virtual environment:
 `pipenv install`
 `pipenv shell`
