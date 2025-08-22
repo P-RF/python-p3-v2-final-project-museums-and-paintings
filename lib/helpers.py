@@ -114,7 +114,7 @@ def create_painting(museum):
             continue
         break
     Painting.create(title, artist, year, museum)
-    click.echo(f"'{title}' by {artist} | {year} has been added to '{museum.name}'.")
+    click.echo(f"'{title}' by {artist} ({year}) has been added to '{museum.name}'.")
 
 
 def update_painting(painting):

@@ -1,12 +1,14 @@
-## NYC Trains CLI Project
+## Museums & Paintings CLI Project
 
-This project is a command-line interface (CLI) for managing and exploring the data of New York City subway trains. A user can list all trains, find a train by line or category, create new trains, update, and delete existing trains. The CLI interacts with an SQLite database (`company.db`) that stores train information, including line, category, and `nycdot_id`.  
+This project is a command-line interface (CLI) for managing and exploring museums and their paintings. A user can list all museums, view the paintings in each museum, find museums or paintings, create new museums and paintings, update existing records, and delete entries. The CLI interacts with an SQLite database (company.db) that stores museum and painting information, including museum name, city, and painting details (title, artist, year).
 
-The main interface is menu-driven, allowing the user to select an action with a number. Each action guides the user to further prompts for required information, such as train line or category, for a smooth interactive experience.
+A user can use this project to keep a personal record of paintings in different museums or if the user is an artist, she/he can use this CLI to keep track of where her/his works of art are located.
 
----
+The main interface is menu-driven, allowing the user to select actions with a number. Each action guides the user through further prompts for required information, providing a smooth interactive experience.
+
+--- 
+
 ## Table of Contents 📖
-
 - [Project Structure](#project-structure)
 - [Features](#features)
 - [Models and Functions](#models-and-functions)
@@ -14,14 +16,15 @@ The main interface is menu-driven, allowing the user to select an action with a 
 - [License](#license)
 
 --- 
+
 ## Project Structure 🏗
 ```console
 .
 └── lib
 │    ├── models
 │    │   ├── __init__.py
-│    │   ├── nycdot.py
-│    │   └── train.py
+│    │   ├── museum.py
+│    │   └── painting.py
 │    ├── cli.py
 │    ├── debug.py
 │    └── helpers.py
@@ -32,109 +35,195 @@ The main interface is menu-driven, allowing the user to select an action with a 
 ```
 
 ---
+
 ## Features ⭐
 
 - Menu-Driven CLI Interface: Main menu with numbered options and continuous prompts.
-- List All Trains: Displays all of the trains in the database.
-- Find Train by Line: Prompts user for inputting a line. Returns matching train.
-- Find Train by Category: Prompts user for inputting a category. Returns all trains that match.
-- Create Train: Prompts user for train details (line and category).
-- Update Train: Prompts user for an existing train line and updates the line and category in the database.
-- Delete Train: Prompts user for a train line and deletes the train.
-- Input Validation: Makes sure user inputs the correct data before performing a operation.
-- Database Integration: CRUD operations using the `Train` model with SQLite3 (`company.db`). Foreign key validation against the `nycdots` table.
-- Exit Option: Exits the CLI when the user inputs option `0`.
-- Helper Functions: `find_by_line()` and `find_by_category()` handle requests and formatting, keeping the CLI code clean.
+- List All Museums: Displays all museums in the database with their city.
+- View Paintings in a Museum: Lists all paintings for a selected museum.
+- Navigate Back: Allows user to input B or b at any menu to return to the previous menu.
+- Create Museum or Painting: Prompts user for details and adds entries to the database when user inputs A/a.
+- Update Museum or Painting: Allows updating museum name, city and painting title, artist, and/or year when user inputs U/u.
+- Delete Museum or Painting: Prompts for deletion of selected museum or painting when user inputs D/d.
+- Input Validation: Ensures user inputs valid data before performing an operation.
+- Database Integration: CRUD operations using Museum and Painting models with SQLite3.
+- Exit Option: Exits the CLI when the user inputs E/e.
+- Helper Functions: list_paintings(), list_museums(), and other helpers streamline queries and menu interactions.
 
+*** INCLUDE GIF
 ![Preview of nycdoe trains project features](public/nycdot-project-video-ezgif.com-video-to-gif-converter.gif)
+
 ---
+
 ## Models and Functions 📱
 ### CLI Script (`cli.py`)
 
-The `cli.py` file is the main file that runs at the start of the application. It provides the main menu, handles user input, and calls helper functions to perform CRUD operations on trains. Below are the key features:
-
-- Exit with option ‘0’
-- Menu-driven interface for easy navigation
-- Input validation (checks what the user types before using it)
-- Uses the Train class to interact with the database
+The `cli.py` file runs the main application. It provides the main menu, handles user input, and calls helper functions to perform CRUD operations on museums and paintings. Key features:
+- Exit with option `E/e`
+- Menu-driven interface for smooth navigation
+- Input validation for all prompts
+- Uses Museum and Painting classes to interact with the database
 
 **Example usage:**
 ```console
 $ python lib/cli.py
-Please select an option:
-0. Exit the program
-1. List all trains
-2. Find train by line
-3. Find train by category
-4. Create train
-5. Update train
-6. Delete train
->:
+Please select an option: 
+
+Type M or m to see the museums
+Type E or e to exit
+
+> m
+
+Museums: 
+
+1. Louvre Museum (Paris, France)
+2. Metropolitan Museum of Art (New York, USA)
+3. Rijksmuseum (Amsterdam, Netherlands)
+4. National Palace Museum (Taipei, Taiwan)
+ 
+Please type the number corresponding to the museum from the list to see its details
+                or
+Type B or b to go back to the previous menu
+Type A or a to add a new museum
+Type E or e to exit
+
+> 4
+
+Paintings at 'National Palace Museum': 
+
+1. Green Mountains and White Clouds
+2. Picture of the New Year
+ 
+Please type the number corresponding to the painting from the list to see its details
+                or
+Type B or b to go back to the previous menu
+Type A or a to add a new painting
+Type U or u to update this museum
+Type D or d to delete this museum
+Type E or e to exit
+
+> 1
+
+Details of 'Green Mountains and White Clouds': 
+Artist: Wu Li
+Year: 1644
+ 
+Options:
+Type B or b to go back to the previous menu
+Type U or u to update this painting
+Type D or d to delete this painting
+Type E or e to exit
+
+> b
+
+Paintings at 'National Palace Museum': 
+
+1. Green Mountains and White Clouds
+2. Picture of the New Year
+ 
+Please type the number corresponding to the painting from the list to see its details
+                or
+Type B or b to go back to the previous menu
+Type A or a to add a new painting
+Type U or u to update this museum
+Type D or d to delete this museum
+Type E or e to exit
+
+> 
 ```
 
 ### Functions
 
-#### `main()`
-Runs the main loop of the CLI, displays the menu, and routes the user’s choices to corresponding functions. It continuously prompts the user until the user chooses to exit.
+#### `main_menu()`
+Runs the main loop of the CLI, displaying the menu and routing user input to the appropriate functions. Continuously prompts until the user exits. Allows user to:
+- Select an option to view the list of museums (M/M)
+- Exit the program (E/e)
 
-#### `menu()`
-Displays the numbered list of actions available in the CLI.
+#### Option Handlers
+`museums_menu():` Lists all museums and allows the user to: 
+- Go back to the previous menu (B/b)
+- Add a new museum (A/a)
+- Exit the program (E/e)
 
-### Option Handlers
-- `list_all_trains()`: Lists all trains in the database with their details (line, category, Nycdot ID).  
-- `find_by_line()`: Prompts for a line and retrieves the corresponding train object.  
-- `find_by_category()`: Prompts for a category and retrieves all train objects with matching ‘category’.  
-- `create_train()`: Prompts for train details and creates a new train in the database.  
-- `update_train()`: Prompts for an existing train line and updates its line and category.  
-- `delete_train()`: Prompts for a train line and deletes the indicated train from the database.  
-- `exit_program()`: Exits the CLI.
+`paintings_menu(museum):` Lists all paintings in a selected museum and allows the user to:
+- Go back to the previous menu (B/b)
+- Add a new painting (A/a)
+- Update the current museum (U/u)
+- Delete the current museum (D/d)
+- Exit the program (E/e)
+
+`painting_details_menu(painting, museum):` Displays details of a painting and allows the user to:
+- Go back to the previous menu (B/b)
+- Update the current painting (U/u)
+- Delete the current painting (D/d)
+- Exit the program (E/e)
+
+- `create_museum(), create_painting(museum):` Prompts for details and saves the new entry to the database.
+- `update_museum(museum), update_painting(painting):` Prompts to update the selected museum or painting and saves the changes.
+- `delete_museum(museum), delete_painting(painting):` Deletes selected record from the database.
+- `exit_program():` Exits the CLI.
 
 ---
 
 ### Helper Functions (`helpers.py`)
 
-This file contains functions that aid in the CLI operations, including input handling, validation, and formatting. Each function is designed to keep the CLI code focused on the user’s interaction. Examples include:
-
-- `find_by_line()`: Selects the `Train.find_by_line` method and prints the results.  
-- `find_by_category()`: Selects the `Train.find_by_category` method and prints queries.  
+Contains utility functions for the CLI, including input handling, validation, and formatting. Examples:
+- `list_museums(), list_paintings(museum):` Retrieves museums/paintings for a museum/painting and formats them for display.
+- Input validation functions to ensure correct data types and ranges for year or names.
 
 ---
+
 ### Models 
-#### `train.py`
+#### `museum.py`
+Represents museums in the database and handles all interactions:
+- create(name, location): Creates a new museum.
+- update(name=None, city=None): Updates a museum’s attributes.
+- delete(): Deletes a museum and its related paintings.
+- get_all(): Returns all museums.
+- find_by_id(id): Returns a museum by id.
 
-The `Train` model represents the trains table in the database and handles all of the database interactions. `train.py` represents a subway train. It handles the database interactions such as creating, updating, and deleting train records.
+#### `painting.py`
+Represents paintings in the database and handles CRUD operations:
+- create(title, artist, year, museum): Adds a painting.
+- update(title=None, artist=None, year=None): Updates the painting.
+- delete(): Deletes the painting.
+- get_all(): Returns all paintings.
+- find_by_id(id): Returns a painting by id.
+- find_by_museum(museum_id): Returns all paintings for a specific museum.
 
-##### Functions: 
-- `create(line, category, nycdot_id=None)`: Adds a new train to the database.
-- `update()`: Updates the current train instance in the database.
-- `save()`: Saves a new train instance to the database.
-- `find_by_line(line)`: Returns all trains with a given line.
-- `find_by_category(category)`: Returns all trains with a given category.
+#### Key Functions: 🔑
+`Museum`
+- `find_by_id(id):` Returns a Museum object corresponding to the table row matching the specified primary key. Useful for validating museum relationships when assigning paintings.
 
-#### `nycdot.py`
-This model represents the NYC Department of Transportation (NYCDOT). It is used to validate foreign key references from the Train objects.
+`Painting`
+- `find_by_museum(museum_id):` Returns a list of Painting objects belonging to the specified museum. This is how the CLI lists all paintings for a museum.
 
-##### Key Function:
-- `find_by_id(id)`: Checks if an NYCDOT record exists in the database for a given ID.
+##### Properties:
+`Museum`
+- `name:` The name of the museum (string). Must be a non-empty string.
+- `location:` The location where the museum is located (string). Must be a non-empty string.
 
-##### Properties
-
-- `nycdot_id`: Verifies that the value references a valid `Nycdot` in the database, making sure the foreign key column exists in the related table.  
+`Painting`
+- title: Title of the painting (string). Non-empty.
+- artist: Artist of the painting (string). Non-empty.
+- year: Year the painting was created (integer, year must be between 1000 and current year).
+- museum: The associated Museum object. Must be a saved Museum instance.
 
 ---
+
 ### Database
 
-The project uses SQLite (`company.db`) with two main tables:
+The project uses SQLite (company.db) with two main tables:
+- `museums:` Stores museum name and location.
+- `paintings:` Stores painting title, artist, year, and a foreign key `museum_id` referencing `museums(id)`.
 
-- `trains`: Stores train line, category, and `nycdot_id`.  
-- `nycdots`: Stores `nycdot` data that is referenced (must exist before creating a train).  
-
-Foreign key constraints make sure the `nycdot_id` and the `trains` table points to a valid record in the nycdots table.  
+Foreign key constraints ensure that paintings are always linked to a valid museum. Deleting a museum also deletes all of its associated paintings. Deleting a painting deletes its associated details.
 
 ---
+
 ## Contributing 🤝
 1. Clone the repository:
-`Git clone <your-repo-ssh>`
+`Git clone <git@github.com:P-RF/python-p3-v2-final-project-nyc-trains.git>`
 2. Set up your virtual environment:
 `pipenv install`
 `pipenv shell`
@@ -147,6 +236,7 @@ Foreign key constraints make sure the `nycdot_id` and the `trains` table points 
 Happy coding!
 
 ---
+
 ## Resources 📚
 
 - [Python Official Documentation](https://docs.python.org/3/)
@@ -154,6 +244,7 @@ Happy coding!
 - [Click Documentation](https://click.palletsprojects.com/)
 
 ---
+
 ## License
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://choosealicense.com/licenses/mit/)
