@@ -6,6 +6,7 @@ from models.painting import Painting
 from helpers import (
     list_museums,
     create_museum,
+    update_museum,
     delete_museum,
     list_paintings,
     create_painting,
@@ -71,7 +72,7 @@ def museums_menu():
 
 def paintings_menu(museum):
     while True:
-        click.echo(f"\nPaintings at {museum.name}: \n")
+        click.echo(f"\nPaintings at '{museum.name}': \n")
         paintings = list_paintings(museum)
 
         if paintings:
@@ -83,6 +84,7 @@ def paintings_menu(museum):
         click.echo("                or")
         click.echo("Type B or b to go back to the previous menu")
         click.echo("Type A or a to add a new painting")
+        click.echo("Type U or u to update this museum")
         click.echo("Type D or d to delete this museum")
         click.echo("Type E or e to exit\n")
         choice = input("> ")
@@ -91,6 +93,8 @@ def paintings_menu(museum):
             return museums_menu()
         elif choice.lower() == "a":
             create_painting(museum)
+        elif choice.lower() == "u":
+            update_museum(museum)
         elif choice.lower() == "d":
             delete_museum(museum)
             return museums_menu()

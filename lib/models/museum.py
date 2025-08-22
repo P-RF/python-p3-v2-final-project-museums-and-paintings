@@ -75,15 +75,20 @@ class Museum:
     museum.save()
     return museum
 
-  def update(self):
-    """Update the table row corresponding to the current Museum instance"""
-    sql = """
-      UPDATE museums
-      SET name = ?, location = ?
-      WHERE id = ?
-    """
-    CURSOR.execute(sql, (self.name, self.location, self.id))
-    CONN.commit()
+  def update(self, name=None, location=None):
+      """Update the table row corresponding to the current Museum instance"""
+      if name:
+          self.name = name
+      if location:
+          self.location = location
+
+      sql = """
+        UPDATE museums
+        SET name = ?, location = ?
+        WHERE id = ?
+      """
+      CURSOR.execute(sql, (self.name, self.location, self.id))
+      CONN.commit()
 
   def delete(self):
     """Delete the table row corresponding to the current Museum instance,

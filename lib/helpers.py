@@ -16,6 +16,7 @@ def list_museums():
         i += 1
     return museums
 
+
 def create_museum():
     while True:
         name = input("Enter the museum's name: ")
@@ -34,8 +35,25 @@ def create_museum():
     Museum.create(name, location)
     click.echo(f"Museum '{name}' in '{location}' has been added!")
 
-def update_museum():
-    pass
+
+def update_museum(museum):
+    if not museum:
+        click.echo("No museum selected.")
+        return
+
+    click.echo(f"\nUpdating '{museum.name}'")
+
+    new_name = input(f"Enter a new name: ")
+    if not new_name:
+        new_name = museum.name
+
+    new_location = input(f"Enter a new location: ")
+    if not new_location:
+        new_location = museum.location
+
+    museum.update(new_name, new_location)
+    click.echo(f"Museum '{museum.name}' ({museum.location}) has been updated.")
+
 
 def delete_museum(museum):
     if not museum:
@@ -49,6 +67,7 @@ def delete_museum(museum):
     museum.delete()
     click.echo(f"Museum '{museum.name}' has been deleted.")
 
+
 def list_paintings(museum):
     if not museum:
         click.echo("No museum selected.")
@@ -61,6 +80,7 @@ def list_paintings(museum):
         return []
 
     return paintings
+
 
 def create_painting(museum):
     if not museum:
@@ -96,7 +116,6 @@ def create_painting(museum):
     Painting.create(title, artist, year, museum)
     click.echo(f"'{title}' by {artist} | {year} has been added to '{museum.name}'.")
 
-    return paintings_menu(museum)
 
 def update_painting(painting):
     if not painting:
@@ -146,6 +165,7 @@ def update_painting(painting):
 
     return painting
 
+
 def delete_painting(painting):
     if not painting:
         click.echo("No painting selected.")
@@ -153,6 +173,7 @@ def delete_painting(painting):
 
     painting.delete()
     click.echo(f"Painting '{painting.title}' by {painting.artist} has been deleted.")
+
 
 def exit_program():
     print("Goodbye!")
