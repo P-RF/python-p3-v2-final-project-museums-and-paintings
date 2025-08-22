@@ -103,15 +103,22 @@ class Painting:
     self.id = CURSOR.lastrowid
     type(self).all[self.id] = self
 
-  def update(self):
-    """Update the table row corresponding to the current Painting instance"""
-    sql = """
-      UPDATE paintings
-      SET title = ?, artist = ?, year = ?, museum_id = ?
-      WHERE id = ?
-    """
-    CURSOR.execute(sql, (self.title, self.artist, self.year, self.museum.id, self.id))
-    CONN.commit()
+  def update(self, title=None, artist=None, year=None):
+      """Update the table row corresponding to the current Painting instance"""
+      if title:
+          self.title = title
+      if artist:
+          self.artist = artist
+      if year:
+          self.year = year
+
+      sql = """
+        UPDATE paintings
+        SET title = ?, artist = ?, year = ?
+        WHERE id = ?
+      """
+      CURSOR.execute(sql, (self.title, self.artist, self.year, self.id))
+      CONN.commit()
 
 
   def delete(self):
@@ -208,4 +215,14 @@ class Painting:
       WHERE year = ?
     """
     rows = CURSOR.execute(sql, (year,)).fetchall()
+    return [cls.instance_from_db(row) for row in rows]
+
+  @classmethod
+  def find_by_museum(cls, museum_id):
+    sql = """
+      SELECT *
+      FROM paintings
+      WHERE museum_id = ?
+    """
+    rows = CURSOR.execute(sql, (museum_id,)).fetchall()
     return [cls.instance_from_db(row) for row in rows]
